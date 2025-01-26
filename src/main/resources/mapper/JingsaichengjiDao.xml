@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.JingsaichengjiDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.entity.JingsaichengjiEntity" id="jingsaichengjiMap">
+        <result property="jingsaimingcheng" column="jingsaimingcheng"/>
+        <result property="jingsaichengji" column="jingsaichengji"/>
+        <result property="dengjiriqi" column="dengjiriqi"/>
+        <result property="beizhu" column="beizhu"/>
+        <result property="xuehao" column="xuehao"/>
+        <result property="xueshengxingming" column="xueshengxingming"/>
+        <result property="jiaoshigonghao" column="jiaoshigonghao"/>
+        <result property="jiaoshixingming" column="jiaoshixingming"/>
+        <result property="userid" column="userid"/>
+    </resultMap>
+
+	<select id="selectListVO"
+		resultType="com.entity.vo.JingsaichengjiVO" >
+		SELECT * FROM jingsaichengji  jingsaichengji         
+        <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<select id="selectVO"
+		resultType="com.entity.vo.JingsaichengjiVO" >
+		SELECT  jingsaichengji.* FROM jingsaichengji  jingsaichengji
+ 		<where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+
+    <select id="selectListView"
+		resultType="com.entity.view.JingsaichengjiView" >
+
+		SELECT  jingsaichengji.* FROM jingsaichengji  jingsaichengji 	        
+        <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<select id="selectView"
+		resultType="com.entity.view.JingsaichengjiView" >
+		SELECT * FROM jingsaichengji  jingsaichengji <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+
+    <select id="selectValue" resultType="map" >
+        SELECT ${params.xColumn}, sum(${params.yColumn}) total FROM jingsaichengji
+        <where> 1=1 ${ew.sqlSegment}</where>
+        group by ${params.xColumn}
+        limit 10
+    </select>
+
+    <select id="selectTimeStatValue" resultType="map" >
+        <if test = 'params.timeStatType == "日"'>
+                SELECT DATE_FORMAT(${params.xColumn},'%Y-%m-%d') ${params.xColumn}, sum(${params.yColumn}) total FROM jingsaichengji
+                <where> 1=1 ${ew.sqlSegment}</where>
+                group by DATE_FORMAT(${params.xColumn},'%Y-%m-%d')
+        </if>
+        <if test = 'params.timeStatType == "月"'>
+                SELECT DATE_FORMAT(${params.xColumn},'%Y-%m') ${params.xColumn}, sum(${params.yColumn}) total FROM jingsaichengji
+                <where> 1=1 ${ew.sqlSegment}</where>
+                group by DATE_FORMAT(${params.xColumn},'%Y-%m')
+        </if>
+        <if test = 'params.timeStatType == "年"'>
+                SELECT DATE_FORMAT(${params.xColumn},'%Y') ${params.xColumn}, sum(${params.yColumn}) total FROM jingsaichengji
+                <where> 1=1 ${ew.sqlSegment}</where>
+                group by DATE_FORMAT(${params.xColumn},'%Y')
+        </if>
+    </select>
+   
+    <select id="selectGroup" resultType="map" >
+        SELECT ${params.column} , count(1) total FROM jingsaichengji  
+        <where> 1=1 ${ew.sqlSegment}</where>
+        group by ${params.column}
+        limit 10
+    </select>
+
+    <select id="jingsaimingchengjingsaichengjiSectionStat" resultType="map" >
+        select 
+        jingsaimingcheng,
+        sum(case when jingsaichengji >= 0 and jingsaichengji &lt;= 59 then 1 else 0 end) as 不及格,        sum(case when jingsaichengji >= 60 and jingsaichengji &lt;= 79 then 1 else 0 end) as 及格,        sum(case when jingsaichengji >= 80 and jingsaichengji &lt;= 89 then 1 else 0 end) as 良,        sum(case when jingsaichengji >= 90 and jingsaichengji &lt;= 100 then 1 else 0 end) as 优秀        from jingsaichengji
+        <where> 1=1 ${ew.sqlSegment}</where>
+        group by jingsaimingcheng
+    </select>
+
+
+	
+</mapper>
